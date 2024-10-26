@@ -43,11 +43,9 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
           children: <Widget>[
             SizedBox(height: 150.0),
             Center(
-              child: Image.asset(
-                'assets/logo.png', // Sua logo aqui
-                height: 100.0,
+              child: Image.asset("imagens/logo.png", width: 200, height: 150),
               ),
-            ),
+
             SizedBox(height: 48.0),
             TextField(
               controller: _emailController,

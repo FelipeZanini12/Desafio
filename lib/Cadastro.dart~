@@ -54,34 +54,24 @@ class _CadastroState extends State<Cadastro> {
         password: usuario.senha,
       );
 
-      // Adicionar o usuário ao Firestore
       FirebaseFirestore db = FirebaseFirestore.instance;
       await db
           .collection("usuarios")
           .doc(userCredential.user!.uid)
           .set(usuario.toMap());
 
-      // Esperar até que o usuário esteja totalmente autenticado
-      if (auth.currentUser != null) {
-        // Instância do TaskStore para gerenciar as tarefas
-        TaskStore taskStore = TaskStore();
+      // Instância do TaskStore para gerenciar as tarefas
+      TaskStore taskStore = TaskStore();
 
-        // Redirecionar para a página da lista de tarefas
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TaskListPage(taskStore: taskStore),
-          ),
-        );
-      } else {
-        setState(() {
-          _mensagemErro = "Erro ao autenticar usuário.";
-        });
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TaskListPage(taskStore: taskStore),
+        ),
+      );
     } catch (error) {
-      setState(() {
-        _mensagemErro = "Erro ao cadastrar usuário: ${error.toString()}";
-      });
+      setState(() =>
+      _mensagemErro = "Erro ao cadastrar usuário: ${error.toString()}");
     }
   }
 

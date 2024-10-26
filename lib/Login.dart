@@ -1,3 +1,4 @@
+import 'package:desafio/widgets/recupera_senha.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'Home.dart';
@@ -85,8 +86,11 @@ class _LoginState extends State<Login> {
                 ),
                 TextButton(
                   onPressed: () {
-                    // Navegação para a tela de recuperação de senha
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) => RecuperarSenha()));
+                    // Navegar para a página de recuperação de senha
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ResetPasswordPage()),
+                    );
                   },
                   child: Text("Esqueceu a senha?"),
                 ),

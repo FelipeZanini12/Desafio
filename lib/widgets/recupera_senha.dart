@@ -1,7 +1,5 @@
-// reset_password_page.dart
 import 'package:flutter/material.dart';
 import '../model/reset_password_service.dart';
-
 
 class ResetPasswordPage extends StatefulWidget {
   @override
@@ -10,7 +8,8 @@ class ResetPasswordPage extends StatefulWidget {
 
 class _ResetPasswordPageState extends State<ResetPasswordPage> {
   final _emailController = TextEditingController();
-  final ResetPasswordService _resetPasswordService = ResetPasswordService(); // Instância do serviço
+  final ResetPasswordService _resetPasswordService = ResetPasswordService();
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -19,34 +18,51 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
   }
 
   Future<void> _sendPasswordResetEmail() async {
-    try {
-      await _resetPasswordService.sendPasswordResetEmail(_emailController.text);
+    final email = _emailController.text.trim();
+
+    if (email.isEmpty || !email.contains('@')) {
+      // Verifica se o e-mail é válido
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('E-mail de redefinição de senha enviado!')),
+        const SnackBar(content: Text('Por favor, insira um e-mail válido')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _resetPasswordService.sendPasswordResetEmail(email);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('E-mail de redefinição de senha enviado!')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro: ${e.toString()}')),
       );
+    } finally {
+      setState(() {
+        _isLoading = false; // Para o carregamento
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Cor de fundo
+      backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            SizedBox(height: 150.0),
+            const SizedBox(height: 150.0),
             Center(
               child: Image.asset("imagens/logo.png", width: 200, height: 150),
-              ),
-
-            SizedBox(height: 48.0),
+            ),
+            const SizedBox(height: 48.0),
             TextField(
               controller: _emailController,
               keyboardType: TextInputType.emailAddress,
@@ -58,28 +74,30 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                   borderRadius: BorderRadius.circular(12.0),
                 ),
               ),
-              style: TextStyle(color: Colors.black), // Estilo da caixa de texto
+              style: const TextStyle(color: Colors.black),
             ),
-            SizedBox(height: 24.0),
-            ElevatedButton(
+            const SizedBox(height: 24.0),
+            _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ElevatedButton(
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 16.0),
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
                 ),
               ),
               onPressed: _sendPasswordResetEmail,
-              child: Text(
+              child: const Text(
                 'Enviar e-mail de redefinição',
                 style: TextStyle(fontSize: 16.0),
               ),
             ),
-            SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Voltar para a página de login
               },
-              child: Text(
+              child: const Text(
                 'Voltar ao login',
                 style: TextStyle(color: Colors.blueAccent),
               ),
